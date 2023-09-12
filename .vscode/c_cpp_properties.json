@@ -124,6 +124,7 @@
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
             "compilerPath": "C:/Users/P/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-gcc.exe",
+            "compilerPath": "C:/Users/P/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-gcc.exe",
             "compilerArgs": [
                 "-mlongcalls",
                 "-mtext-section-literals",
