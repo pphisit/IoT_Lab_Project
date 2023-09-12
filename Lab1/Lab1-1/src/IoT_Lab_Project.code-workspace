@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "IoT_Lab_Project",
+			"path": "../../.."
+		},
+		{
+			"name": "Lab1-2",
+			"path": "../../Lab1-2"
+		},
+		{
+			"name": "Lab1-3",
+			"path": "../../Lab1-3"
+		},
+		{
+			"name": "Lab1-4",
+			"path": "../../Lab1-4"
+		}
+	],
+	"settings": {}
+}
