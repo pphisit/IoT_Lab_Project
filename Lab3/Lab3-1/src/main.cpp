@@ -17,6 +17,7 @@ int motorSpeed = 50;  // ความเร็วเริ่มต้นขอ�
 void setup() {
   Serial.begin(115200);
   state = SPEED;
+  
   pinMode(D5, INPUT);
   pinMode(D6, INPUT);
   pinMode(D0, OUTPUT);
