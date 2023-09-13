@@ -12,17 +12,21 @@ void setup() {
 
 void loop() {
   // ตรวจสอบ Serial Monitor
-  if (Serial.available() > 0) {
-    char command = Serial.read();  
+  // Serial.print("Input: ");
+  while (!Serial.available()){} //เมื่อไม่มีการพิมพ์ใดๆ บน Serial monitor จะทำงานวนใน Loop นี้
+
+  char command =Serial.read(); //อ่านค่า String จากการพิมพ์ผ่าน Serial monitor โดยเก็บค่าที่อ่านได้ไว้ในตัวแปร input
+  Serial.println(command); 
+
   switch (command) {
-    case 'ON':    
+    case '1':    
       if (state == LED_OFF) {
         state = LED_ON;
         digitalWrite(D2, HIGH);
         Serial.println("เปิด LED");
       }
       break;
-    case 'OFF':
+    case '0':
       if (state == LED_ON) {
         state = LED_OFF;
         digitalWrite(D2, LOW);
@@ -33,7 +37,7 @@ void loop() {
       Serial.println("คำสั่งไม่ถูกต้อง");
   }
 }
-}
+
 
 /*#include <Arduino.h>
 // กำหนดขา GPIO ที่เชื่อมกับ LED
@@ -80,4 +84,3 @@ void handleCommand(char command) {
   }
 }
 */
-

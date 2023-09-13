@@ -34,7 +34,7 @@ void loop() {
       break;
   }
 }
-/**/
+/*
 void loop() {
   if(state==LED1_ON){    
       digitalWrite(D0, HIGH);
@@ -51,7 +51,7 @@ void loop() {
 }
 
 
-/*
+
 #include <ESP8266WiFi.h>
 
 // กำหนดขา GPIO ที่เชื่อมกับ LED

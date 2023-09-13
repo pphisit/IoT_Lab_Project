@@ -1,148 +1,98 @@
-#include <Arduino.h>
-
-// กำหนดขา GPIO ที่เชื่อมกับ LED 7-Segment 4 หลัก
-int Digit_pins[] = {D0,D1,D2,D3};
-int Segment_pin[] = {D4, D5, D6, D7, D8, D9, D10}; //กำหนด Port สำหรับขา Segment  A ถึง G
-
+// 3.	แสดงปีที่เกิดผ่าน LED 7- Segment พ.ศ.
+#include "Arduino.h"
+int Digit_pins[] = {D0, D1, D2, D3};               // กำหนด Port สำหรับขา Digit D1 ถึง D4
+int Segment_pin[] = {D4, D5, D6, D7, D8, D9, D10}; // กำหนด Port สำหรับขา Segment  A ถึง G
 const int SHOW_DIGIT_1 = 1;
 const int SHOW_DIGIT_2 = 2;
 const int SHOW_DIGIT_3 = 3;
 const int SHOW_DIGIT_4 = 4;
-int state ;
-int number[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66,
-                  0x6D, 0x7D, 0x07, 0x7F, 0x6F};
-
-// แบบอักษร 7-Segment สำหรับแสดงตัวเลข 0-9
-/*const byte digits[10] = {
-  B11111100, // 0
-  B01100000, // 1
-  B11011010, // 2
-  B11110010, // 3
-  B01100110, // 4
-  B10110110, // 5
-  B10111110, // 6
-  B11100000, // 7
-  B11111110, // 8
-  B11110110  // 9
-};
-*/
-
-// กำหนดสถานะของ State Machine
-
-
-void setup() {
-  // เริ่มต้น Serial Monitor
-  Serial.begin(115200);
-
-  // กำหนดขาที่เชื่อมกับ LED 7-Segment เป็น OUTPUT
-  for (int i = 0; i < 4; i++) {
-    pinMode(Digit_pins[i], OUTPUT);
-    digitalWrite(Segment_pin[i], LOW);
-  }
+int state;
+void setup()
+{
+    state = SHOW_DIGIT_1;
+    // กำหนดให้ขาที่ใช้เป็น Output ประกาศทีล่ะ Port จากตัวแปร Digit_pins
+    for (int i = 0; i < 4; i++)
+    {
+        pinMode(Digit_pins[i], OUTPUT);
+    }
+    // กำหนดให้ขาที่ใช้เป็น Output ประกาศทีล่ะ Port จากตัวแปร Segment_pin
+    for (int i = 0; i < 7; i++)
+    {
+        pinMode(Segment_pin[i], OUTPUT);
+    }
 }
-
-void loop() {
-  switch (state) {
-    case SHOW_DIGIT_1:
-      displayDigit(number[2]);
-      state = SHOW_DIGIT_2;
-      delay(1000);
-      break;
-
-    case SHOW_DIGIT_2:
-      displayDigit(number[0]);
-      state = SHOW_DIGIT_3;
-      delay(1000);
-      break;
-
-    case SHOW_DIGIT_3:
-      displayDigit(number[0]);
-      state = SHOW_DIGIT_3;
-      delay(1000);
-      break;
-
-    case SHOW_DIGIT_4:
-      displayDigit(number[2]);
-      state = SHOW_DIGIT_4;
-      delay(1000);
-      break;
-  }
+void loop()
+{
+                  if (state == SHOW_DIGIT_1)
+    {
+        // กำหนดให้ขาเปิดใช้ขา Digit 1 ทำงาน และปิดขา Digit 2,3,4
+        digitalWrite(Digit_pins[0], LOW);
+        digitalWrite(Digit_pins[1], HIGH);
+        digitalWrite(Digit_pins[2], HIGH);
+        digitalWrite(Digit_pins[3], HIGH);
+        // แสดงเลข 2 บน 7 Segment
+        digitalWrite(Segment_pin[0], HIGH);
+        digitalWrite(Segment_pin[1], HIGH);
+        digitalWrite(Segment_pin[2], LOW);
+        digitalWrite(Segment_pin[3], HIGH);
+        digitalWrite(Segment_pin[4], HIGH);
+        digitalWrite(Segment_pin[5], LOW);
+        digitalWrite(Segment_pin[6], HIGH);
+        delay(1);
+        state = SHOW_DIGIT_2;
+    }
+    else if (state == SHOW_DIGIT_2)
+    {
+        // กำหนดให้ขาเปิดใช้ขา Digit 2 ทำงาน และปิดขา Digit 1,3,4
+        digitalWrite(Digit_pins[0], HIGH);
+        digitalWrite(Digit_pins[1], LOW);
+        digitalWrite(Digit_pins[2], HIGH);
+        digitalWrite(Digit_pins[3], HIGH);
+        // แสดงเลข 5 บน 7 Segment
+        digitalWrite(Segment_pin[0], HIGH);
+        digitalWrite(Segment_pin[1], LOW);
+        digitalWrite(Segment_pin[2], HIGH);
+        digitalWrite(Segment_pin[3], HIGH);
+        digitalWrite(Segment_pin[4], LOW);
+        digitalWrite(Segment_pin[5], HIGH);
+        digitalWrite(Segment_pin[6], HIGH);
+        delay(1);
+        state = SHOW_DIGIT_3;
+    }
+    else if (state == SHOW_DIGIT_3)
+    {
+        // กำหนดให้ขาเปิดใช้ขา Digit 3 ทำงาน และปิดขา Digit 1,2,4
+        digitalWrite(Digit_pins[0], HIGH);
+        digitalWrite(Digit_pins[1], HIGH);
+        digitalWrite(Digit_pins[2], LOW);
+        digitalWrite(Digit_pins[3], HIGH);
+        // แสดงเลข 4 บน 7 Segment
+        digitalWrite(Segment_pin[0], LOW);
+        digitalWrite(Segment_pin[1], HIGH);
+        digitalWrite(Segment_pin[2], HIGH);
+        digitalWrite(Segment_pin[3], LOW);
+        digitalWrite(Segment_pin[4], LOW);
+        digitalWrite(Segment_pin[5], HIGH);
+        digitalWrite(Segment_pin[6], HIGH);
+        delay(1);
+        state = SHOW_DIGIT_4;
+    }
+    else if (state == SHOW_DIGIT_4)
+    {
+        // กำหนดให้ขาเปิดใช้ขา Digit 4 ทำงาน และปิดขา Digit 1,2,3
+        digitalWrite(Digit_pins[0], HIGH);
+        digitalWrite(Digit_pins[1], HIGH);
+        digitalWrite(Digit_pins[2], HIGH);
+        digitalWrite(Digit_pins[3], LOW);
+        // แสดงเลข 5 บน 7 Segment
+        digitalWrite(Segment_pin[0], HIGH);
+        digitalWrite(Segment_pin[1], LOW);
+        digitalWrite(Segment_pin[2], HIGH);
+        digitalWrite(Segment_pin[3], HIGH);
+        digitalWrite(Segment_pin[4], LOW);
+        digitalWrite(Segment_pin[5], HIGH);
+        digitalWrite(Segment_pin[6], HIGH);
+        delay(1);
+        state = SHOW_DIGIT_1;
+    }
 }
-
-void displayDigit(int value) {
-  for (int i = 0; i < 8; i++) {
-    digitalWrite(Digit_pins[i], bitRead(value, i));
-  }
-}
-
-
-
-/*
-#include <ESP8266WiFi.h>
-
-// กำหนดขา GPIO ที่เชื่อมกับ LED 7-Segment 4 หลัก
-const int segmentPins[4] = {2, 3, 4, 5};
-
-// แบบอักษร 7-Segment สำหรับแสดงตัวเลข 0-9
-const byte digits[10] = {
-  B11111100, // 0
-  B01100000, // 1
-  B11011010, // 2
-  B11110010, // 3
-  B01100110, // 4
-  B10110110, // 5
-  B10111110, // 6
-  B11100000, // 7
-  B11111110, // 8
-  B11110110  // 9
-};
-
-// กำหนดสถานะของ State Machine
-enum State { DISPLAY_DIGIT1, DISPLAY_DIGIT2, DISPLAY_DIGIT3, DISPLAY_DIGIT4 };
-State currentState = DISPLAY_DIGIT1;
-
-void setup() {
-  // เริ่มต้น Serial Monitor
-  Serial.begin(115200);
-
-  // กำหนดขาที่เชื่อมกับ LED 7-Segment เป็น OUTPUT
-  for (int i = 0; i < 4; i++) {
-    pinMode(segmentPins[i], OUTPUT);
-    digitalWrite(segmentPins[i], LOW);
-  }
-}
-
-void loop() {
-  switch (currentState) {
-    case DISPLAY_DIGIT1:
-      displayDigit(digits[0]);
-      currentState = DISPLAY_DIGIT2;
-      delay(1000);
-      break;
-
-    case DISPLAY_DIGIT2:
-      displayDigit(digits[1]);
-      currentState = DISPLAY_DIGIT3;
-      delay(1000);
-      break;
-
-    case DISPLAY_DIGIT3:
-      displayDigit(digits[2]);
-      currentState = DISPLAY_DIGIT4;
-      delay(1000);
-      break;
-
-    case DISPLAY_DIGIT4:
-      displayDigit(digits[3]);
-      currentState = DISPLAY_DIGIT1;
-      delay(1000);
-      break;
-  }
-}
-
-void displayDigit(byte value) {
-  for (int i = 0; i < 8; i++) {
-    digitalWrite(segmentPins[i], bitRead(value, i));
-  }
-}
-*/
