@@ -2,14 +2,14 @@
 
 #include <Arduino.h>
 
-const int LED_ON = 0;  // ขาปุ่ม
-const int LED_OFF = 1;     // ขา LED
+const int LED_ON = 0;  
+const int LED_OFF = 1; 
 int state;
 
 volatile bool buttonState = false;
 bool lastButtonState = false;
 
-void buttonInterrupt() {
+IRAM_ATTR void buttonInterrupt() {
   buttonState = true;
 }
 
@@ -17,6 +17,7 @@ void setup() {
   pinMode(D1, INPUT);
   pinMode(D2, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(D1), buttonInterrupt, FALLING);
+  state = LED_ON;
 }
 
 void loop() {
@@ -31,7 +32,7 @@ void loop() {
 
     case LED_OFF:
       digitalWrite(D2, LOW);
-      if (buttonState) {
+      if (!buttonState) {
         state = LED_ON;
         buttonState = false;
       }

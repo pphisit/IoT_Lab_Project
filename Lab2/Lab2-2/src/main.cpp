@@ -72,7 +72,7 @@ void setup() {
   pinMode(D1, INPUT);
   pinMode(D2, OUTPUT);
   state = LED_ON;
-  attachInterrupt(digitalPinToInterrupt(D1), pressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(D1), pressed, RISING);
 }
 
 void loop() {
