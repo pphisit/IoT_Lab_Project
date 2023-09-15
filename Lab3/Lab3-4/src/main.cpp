@@ -2,8 +2,11 @@
 #include <Arduino.h>
 
 // กำหนดขา GPIO ที่เชื่อมกับมอเตอร์
+
 const int motorPin1 = D5; // สำหรับควบคุมทิศทางการหมุน
 const int motorPin2 = D6; // สำหรับควบคุมทิศทางการหมุน
+
+
 //const int pwmPin = 14;   // สำหรับควบคุมความเร็ว PWM
 int motorSpeed ;
 // กำหนดขา GPIO ที่เชื่อมกับปุ่ม
@@ -12,6 +15,8 @@ const int buttonPin = D1;
 // กำหนดตัวแปรสำหรับ State Machine
 enum State { STOPPED, clockwise, anticlockwise };
 State currentState = clockwise; 
+
+
 void setup() {
   // เริ่มต้น Serial Monitor
   Serial.begin(115200);
@@ -19,7 +24,7 @@ void setup() {
   // กำหนดขาที่เชื่อมกับมอเตอร์เป็น OUTPUT
   pinMode(motorPin1, OUTPUT);
   pinMode(motorPin2, OUTPUT);
-
+  pinMode(A0, INPUT);
   // กำหนดขา PWM เป็น OUTPUT
   //pinMode(pwmPin, OUTPUT);
 
@@ -39,6 +44,9 @@ void loop() {
       analogWrite(motorPin1, motorSpeed); // ทิศทางการหมุนข้างหน้า
       analogWrite(motorPin2, LOW);
       if (digitalRead(buttonPin) == HIGH) {
+        while (digitalRead(buttonPin) == HIGH)
+        {
+        }
         currentState = anticlockwise; // ถ้าปุ่มถูกกด สั่งให้มอเตอร์หมุนข้างหลัง
       }
       break;
@@ -50,6 +58,10 @@ void loop() {
       analogWrite(motorPin1, LOW); // ทิศทางการหมุนข้างหลัง
       analogWrite(motorPin2, motorSpeed);
       if (digitalRead(buttonPin) == HIGH) {
+        while (digitalRead(buttonPin) == HIGH)
+        {
+        }
+        
         currentState = clockwise; // ถ้าปุ่มถูกกด สั่งให้มอเตอร์หยุดหมุน
       }
       break;

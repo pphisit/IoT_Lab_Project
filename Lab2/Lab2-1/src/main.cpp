@@ -24,6 +24,7 @@ void loop() {
   switch (state) {
     case LED_ON:
       digitalWrite(D2, HIGH);
+      Serial.println("LED ON");
       if (buttonState) {
         state = LED_OFF;
         buttonState = false;
@@ -32,6 +33,7 @@ void loop() {
 
     case LED_OFF:
       digitalWrite(D2, LOW);
+      Serial.println("LED OFF");
       if (!buttonState) {
         state = LED_ON;
         buttonState = false;
