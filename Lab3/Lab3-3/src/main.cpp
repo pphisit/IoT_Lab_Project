@@ -1,63 +1,41 @@
-// 2.กดปุ่มที่1เพิ่มความเร็วมอเตอร์ และกดปุ่มที่2 ลดความเร็วมอเตอร์ ผ่านแต่เทสใหม่ดีกว่า
-
+//3. ใช้ตัวต้านทานปรับค่าได้ คุมทิศทางของมอเตอร์ ผ่าน(ถ้าค่าตัวต้านทาน0-124 มอเตอร์จะหมุนตามเข็ม และค่า 125-255 มอเตอร์จะหมุนทางซ้าย)
 #include <Arduino.h>
-const int SPEED_UP= 0;
-const int SPEED_DOWN= 1;
-const int SPEED = 2;
-int state;
 
-int motorSpeed = 0;  // ความเร็วเริ่มต้นของมอเตอร์
+const int CLOCKWISE = 0; 
+const int ANTI_CLOCKWISE = 1; 
+const int motorPin1 = D5; 
+const int motorPin2 = D6; 
+int state ;
 
 void setup() {
-  Serial.begin(115200);
-  state = SPEED;
   
-  pinMode(D5, OUTPUT);
-  pinMode(D6, OUTPUT);
-  pinMode(D1, INPUT);
-  pinMode(D2, INPUT);
+  Serial.begin(115200);  
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  pinMode(A0, INPUT); 
+  state = CLOCKWISE;
 }
+
 void loop() {
+  int potValue = analogRead(A0);
+  int motorSpeed = map(potValue, 0, 1023, 0, 255);
+  Serial.println(motorSpeed);
+
   switch (state) {
-    
-    case SPEED:
-      Serial.println("ความเร็วปัจจุบัน: " + String(motorSpeed));
-      if (digitalRead(D1) == 1) {
-        state = SPEED_UP;
-      } else if (digitalRead(D2) == 1) {
-        state = SPEED_DOWN;
+    case CLOCKWISE:
+      analogWrite(motorPin1, 50);
+      analogWrite(motorPin2, 0);
+      if (motorSpeed >= 125) {
+        state = ANTI_CLOCKWISE;
       }
-      analogWrite(D5, motorSpeed);
-      analogWrite(D6, 0);
-      break; 
-
-    case SPEED_UP:
-      if (motorSpeed < 250) {
-        motorSpeed = motorSpeed + 50;  
-      }
-      else if (motorSpeed >= 250){
-        motorSpeed = 250; 
-      }
-      
-      
-      Serial.println("เพิ่มความเร็ว: " + String(motorSpeed));
-      state = SPEED;
-      delay(500);
       break;
 
-    case SPEED_DOWN:
-      if (motorSpeed > 50) {
-        motorSpeed = motorSpeed-50;  
+    case ANTI_CLOCKWISE:
+      analogWrite(motorPin1, 0);
+      analogWrite(motorPin2, 50);
+      if (motorSpeed < 125) {
+        state = CLOCKWISE;
       }
-      else if (motorSpeed <= 50){
-        motorSpeed = 0; 
-      }
-      Serial.println("ลดความเร็ว: " + String(motorSpeed));
-      state = SPEED;
-      delay(500);
       break;
-
   }
 }
-
-
