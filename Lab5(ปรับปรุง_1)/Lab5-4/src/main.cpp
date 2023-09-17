@@ -1,28 +1,26 @@
-//4. บันทึกค่า RFID ลงบน SD Card
+//4. จำลองการเปิด-ปิดประตูเลื่อน โดยการแตะบัตร RFID เพื่อสั่งให้ DC motor หมุน
+
 #include <Arduino.h>
 #include <SD.h>
 #include <SPI.h>
 #include <MFRC522.h>
 #include <Wire.h>
 
-//กำหนด Pin ที่ต้องการใช้
 #define RST_PIN D1
 #define SS_PIN D2 //RFID
-#define chipSelect D8 //SD Card
+#define MOTOR_PIN D0 // ขาที่เชื่อมต่อกับ DC motor
 
-String rfid_in;  
+String rfid_in; 
+String rfid_pass="54EA7AC"; //เก็บค่า RFID สามารถเปลี่ยนแปลงได้
 String readRFID();
-void writeSD();
+void openDoor(); // เพิ่มฟังก์ชันสำหรับเปิดประตู
 
-//กำหนด state 
-const int CHECK_RFID = 0;
-const int CHECK_SD = 1;
-const int READ_RFID = 2;
-const int WRITE_SD = 3;
+const int READ_RFID = 0;
+const int CHECK_RFID = 1;
+const int OPEN_DOOR = 2; // เปลี่ยน WRITE_SD เป็น OPEN_DOOR
 
-//กำหนด state แรกที่ทำงาน
 int state = CHECK_RFID;
-MFRC522 mfrc522(SS_PIN, RST_PIN); //รุ่น rfid
+MFRC522 mfrc522(SS_PIN, RST_PIN); // รุ่น rfid
 
 void setup() 
 {
@@ -30,57 +28,41 @@ void setup()
     SPI.begin();
     mfrc522.PCD_Init();
 
+    pinMode(MOTOR_PIN, OUTPUT);
 }
+
 void loop() 
 {
     switch(state) 
-    {
-        //เช็คการเชื่อมต่อ RFID
-        case CHECK_RFID:
-        if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
-            state = READ_RFID;
-        } else {
-            Serial.println("Fail RFID");
-        delay(1000);
-        }
-            state = READ_RFID;
-            break;
-        
-        //อ่านค่า RFID
+    {    
         case READ_RFID: 
-        if(mfrc522.PICC_IsNewCardPresent()&&mfrc522.PICC_ReadCardSerial()){
-            rfid_in = readRFID();
-            Serial.println("Read RFID");
-            Serial.println("HEX: "+rfid_in);
-            delay(1000);
-            state = CHECK_SD;
-        }
-            
+                rfid_in = readRFID();
+                Serial.println("Read RFID");
+                Serial.println("HEX: "+rfid_in);
+                delay(1000);
+                if(rfid_pass==rfid_in){
+                    state = OPEN_DOOR; // เปลี่ยน state เมื่ออ่าน RFID สำเร็จ
+                }
+                else{
+                    state = CHECK_RFID;
+                }
             break;
-
-        //เช็คการเชื่อมต่อกับ SD Card
-        case CHECK_SD: 
-            if(SD.begin(chipSelect)) {
-                Serial.println("Card initialized.");
-                state = WRITE_SD;
+        case CHECK_RFID:
+            if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+                state = READ_RFID;
             } else {
-                Serial.println("Card failed");
-                delay(10000); // รอ 10 วินาที
-                state = CHECK_RFID;
+                Serial.println("Wait RFID");
+                delay(1000);
             }
             break;
-
-        //เขียนค่าลง SD Card
-        case WRITE_SD:
-            writeSD();
-            state = CHECK_RFID;
+            
+        case OPEN_DOOR: // เปลี่ยนชื่อ state เป็น OPEN_DOOR
+            openDoor(); // เรียกใช้ฟังก์ชันเพื่อเปิดประตู
+            state = CHECK_RFID; // หลังจากเปิดประตูเสร็จ กลับไปที่ CHECK_RFID
             break;
-
     }
-
 }
 
-//อ่านค่า RFID แปลงจาก Byte เป็น HEX แล้วแปลงเป็นตัวหนังสือ
 String readRFID()
 {
     String content;
@@ -93,19 +75,8 @@ String readRFID()
     return content.substring(1);
 }
 
-//เขียนข้อมูลลงไฟล์ "data.txt" ใน SD Card 
-void writeSD(){
-    File dataFile = SD.open("data.txt", FILE_WRITE);
-
-    if(dataFile)
-    {
-        dataFile.print("RFID Value : ");
-        dataFile.println(rfid_in);
-        dataFile.close();
-        //บันทึกข้อมูลสำเร็จ
-        Serial.println("Data recorded");
-    } else{
-        //บันทึกข้อมูลไม่สำเร็จ
-        Serial.println("Error opening file");
-    }
+void openDoor() {
+    digitalWrite(MOTOR_PIN, HIGH);
+    delay(5000); // ให้ DC motor หมุนเป็นเวลา 1 วินาที
+    digitalWrite(MOTOR_PIN, LOW);
 }

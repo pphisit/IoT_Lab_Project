@@ -1,47 +1,5 @@
 //1.กดปุ่มกดดับปล่อยดิด LED แบบ Pull-Down โดยใช้ Interrupt และ Debounce
-/*
-#include <Arduino.h>
 
-const int LED_ON = 0;  
-const int LED_OFF = 1; 
-int state;
-
-volatile bool buttonState = false;
-bool lastButtonState = false;
-
-IRAM_ATTR void buttonInterrupt() {
-  buttonState = true;
-}
-
-void setup() {
-  pinMode(D1, INPUT);
-  pinMode(D2, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(D1), buttonInterrupt, FALLING);
-  state = LED_ON;
-}
-
-void loop() {
-  switch (state) {
-    case LED_ON:
-      digitalWrite(D2, HIGH);
-      Serial.println("LED ON");
-      if (buttonState) {
-        state = LED_OFF;
-        buttonState = false;
-      }
-      break;
-
-    case LED_OFF:
-      digitalWrite(D2, LOW);
-      Serial.println("LED OFF");
-      if (!buttonState) {
-        state = LED_ON;
-        buttonState = false;
-      }
-      break;
-  }
-}
-*/
 #include <Arduino.h>
 
 // กำหนดขา GPIO ที่เชื่อมกับ LED
@@ -55,18 +13,19 @@ enum State { LED_OFF, LED_ON, WAIT_FOR_RELEASE };
 State currentState = LED_ON;
 
 // กำหนดตัวแปรสำหรับเก็บค่าปุ่มขณะกดและปล่อย
-volatile bool buttonPressed = false;
+//volatile bool buttonPressed = false;
 
 IRAM_ATTR void handleButtonPress() {
   // ในฟังชั่นนี้จะถูกเรียกเมื่อเกิดการกดปุ่ม
-  if (!buttonPressed) {
+  if (digitalRead(buttonPin)==HIGH) {
     // ตรวจสอบ Debounce โดยรอเวลา debounceDelay
-    delay(50);
-    if (digitalRead(buttonPin) == HIGH) {
-      buttonPressed = true;
+     while (digitalRead(buttonPin) == HIGH)
+        {          
+        }   
+      State currentState = LED_OFF;
     }
   }
-}
+
 void setup() {
   // เริ่มต้น Serial Monitor
   Serial.begin(115200);
@@ -87,18 +46,13 @@ void loop() {
   switch (currentState) {
     case LED_OFF:
       digitalWrite(ledPin, LOW);
-      if (!buttonPressed) {
-        currentState = LED_ON;
-      }
+      if(digitalRead(buttonPin)==LOW){
+
+        currentState = LED_ON;    
+      }              
       break;
-
-
-
     case LED_ON:
-      digitalWrite(ledPin, HIGH);
-      if (buttonPressed) {
-        currentState = LED_OFF;
-      }
+      digitalWrite(ledPin, HIGH);   
       break;
   }
 }

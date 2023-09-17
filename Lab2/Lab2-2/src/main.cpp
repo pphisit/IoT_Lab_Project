@@ -1,5 +1,4 @@
 //2.กดติดกดดับ LED แบบ Pull-Down โดยใช้ Interrupt และDebounce ช่วย
-//1.กดปุ่มกดดับปล่อยดิด LED แบบ Pull-Down โดยใช้ Interrupt และ Debounce
 /*
 #include <Arduino.h>
 
@@ -7,10 +6,15 @@ const int LED_ON = 0;
 const int LED_OFF = 1; 
 int state;
 
+
+
 volatile bool buttonState = false;
-bool lastButtonState = false;
+//bool lastButtonState = false;
 
 IRAM_ATTR void buttonInterrupt() {
+  while (digitalRead(D1) == HIGH)
+        {          
+        }   
   buttonState = true;
 }
 
@@ -18,7 +22,7 @@ void setup() {
   pinMode(D1, INPUT);
   pinMode(D2, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(D1), buttonInterrupt, FALLING);
-  state = LED_ON;
+  state = LED_OFF;
 }
 
 void loop() {
@@ -33,7 +37,7 @@ void loop() {
 
     case LED_OFF:
       digitalWrite(D2, LOW);
-      if (!buttonState) {
+      if (buttonState) {
         state = LED_ON;
         buttonState = false;
       }
@@ -58,14 +62,14 @@ volatile bool buttonPressed = false;
 
 IRAM_ATTR void handleButtonPress() {
   // ในฟังชั่นนี้จะถูกเรียกเมื่อเกิดการกดปุ่ม
-  if (!buttonPressed) {
+  if (digitalRead(buttonPin)==HIGH) {
     // ตรวจสอบ Debounce โดยรอเวลา debounceDelay
-    delay(50);
-    if (digitalRead(buttonPin) == HIGH) {
-      buttonPressed = true;
+     while (digitalRead(buttonPin) == HIGH)
+        {          
+        }   
+      
     }
   }
-}
 void setup() {
   // เริ่มต้น Serial Monitor
   Serial.begin(115200);
@@ -83,23 +87,22 @@ void setup() {
 }
 
 void loop() {
-  switch (state) {
+  switch (currentState) {
     case LED_ON:
       digitalWrite(D2, HIGH);
-      if (pressed) {
-        state = LED_OFF;
+      if (digitalRead(buttonPin)==HIGH) {
+        currentState = LED_OFF;
       //  pressed = false;
       }
       break;
 
     case LED_OFF:
       digitalWrite(D2, LOW);
-      if (pressed) {
-        state = LED_ON;
-       // pressed = false;
-      }
+    if (digitalRead(buttonPin)==HIGH) {
+        currentState = LED_ON;
       break;
   }
+}
 }
 
 
