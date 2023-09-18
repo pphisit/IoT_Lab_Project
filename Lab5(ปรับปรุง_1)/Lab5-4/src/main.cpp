@@ -77,6 +77,6 @@ String readRFID()
 
 void openDoor() {
     digitalWrite(MOTOR_PIN, HIGH);
-    delay(5000); // ให้ DC motor หมุนเป็นเวลา 1 วินาที
+    delay(5000); // ให้ DC motor หมุนเป็นเวลา 5 วินาที
     digitalWrite(MOTOR_PIN, LOW);
 }
