@@ -1,70 +1,71 @@
 //3.LED 2 ดวงติดดับสลับกันโดยให้ ปุ่มกด 2 ปุ่ม เพิ่มและลดความเร็วการกระพริบ โดยกด 1 ครั้งจะเพิ่มและลดความเร็ว 
 //ทีล่ะ 100 มิลลิวินาที ถ้าลดมากเกิน 1000 มิลลิวินาที ให้กลับมาเริ่มต้นที่ 100 มิลลิวินาที และถ้าเพิ่มต่ำกว่า 100 มิลลิวินาที 
 //ให้กลับมาเริ่มต้นที่ 1000 มิลลิวินาที
-
 #include <Arduino.h>
 
 const int ledPin1 = D1;  // ขา LED 1
 const int ledPin2 = D2;  // ขา LED 2
-const int button1Pin = D3;  // ขาปุ่ม 1
-const int button2Pin = D4;  // ขาปุ่ม 2
+const int button1Pin = D7;  // ขาปุ่ม 1
+const int button2Pin = D8;  // ขาปุ่ม 2
+int delay1 = 100;
+int press = 0;
 
-unsigned long previousMillis = 0;
-unsigned long interval = 100;  // ความหน่วงเริ่มต้น 100 มิลลิวินาที
-int ledState1 = LOW;
-int ledState2 = HIGH;
-unsigned long currentMillis;
+enum State { LED_ON, SPEED_UP,SPEED_DOWN };
+State currentState = SPEED_UP;
 
-enum State { LED1_ON, LED2_ON, WAIT_FOR_BUTTON_PRESS };
-State currentState = LED1_ON;
+IRAM_ATTR void ButtonPress1() {
+  currentState = SPEED_UP;
+  Serial.print("Button1 up");
+}
 
+IRAM_ATTR void ButtonPress2() {
+ currentState = SPEED_DOWN;
+ Serial.print("Button2 down");
+}
 void setup() {
   Serial.begin(115200);
   pinMode(ledPin1, OUTPUT);
   pinMode(ledPin2, OUTPUT);
-  pinMode(button1Pin, INPUT_PULLUP);
-  pinMode(button2Pin, INPUT_PULLUP);
+  pinMode(button1Pin, INPUT);
+  pinMode(button2Pin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(button1Pin), ButtonPress1, RISING);
+  attachInterrupt(digitalPinToInterrupt(button2Pin), ButtonPress2, RISING);
+
 }
-
 void loop() {
-  currentMillis = millis();
-
   switch (currentState) {
-    case LED1_ON:
-      if (currentMillis - previousMillis >= interval) {
-        ledState1 = !ledState1;
-        digitalWrite(ledPin1, ledState1);
-        previousMillis = currentMillis;
-      }
-      if (digitalRead(button1Pin) == LOW) {
-        currentState = WAIT_FOR_BUTTON_PRESS;
-      }
-      if (digitalRead(button2Pin) == LOW) {
-        interval = min(1000, interval + 100);
-      }
+    case LED_ON:
+      digitalWrite(ledPin1, HIGH);      
+      digitalWrite(ledPin2, LOW);
+      delay(delay1);
+      digitalWrite(ledPin1, LOW);      
+      digitalWrite(ledPin2, HIGH);
+      delay(delay1);  
+      Serial.println(delay1);             
       break;
 
-    case LED2_ON:
-      if (currentMillis - previousMillis >= interval) {
-        ledState2 = !ledState2;
-        digitalWrite(ledPin2, ledState2);
-        previousMillis = currentMillis;
+    case SPEED_UP: 
+         if (delay1 < 1000) {
+        delay1 = delay1 + 100;  
       }
-      if (digitalRead(button1Pin) == LOW) {
-        currentState = WAIT_FOR_BUTTON_PRESS;
-      }
-      if (digitalRead(button2Pin) == LOW) {
-        interval = max(100, interval - 100);
-      }
+      else if (delay1 >= 1000){
+        delay1 = 100; 
+      } 
+      Serial.print("Button1 up");
+      Serial.println(delay1);
+      currentState = LED_ON;    
       break;
 
-    case WAIT_FOR_BUTTON_PRESS:
-      if (digitalRead(button1Pin) == HIGH) {
-        currentState = LED1_ON;
+    case SPEED_DOWN:
+      if (delay1 > 100) {
+        delay1 = delay1 - 100;  
       }
-      if (digitalRead(button2Pin) == HIGH) {
-        currentState = LED2_ON;
-      }
-      break;
+      else if (delay1 <= 100){
+        delay1 = 100; 
+      } 
+      Serial.print("Button2 down");
+      Serial.println(delay1);
+      currentState = LED_ON;
+      break;    
   }
 }

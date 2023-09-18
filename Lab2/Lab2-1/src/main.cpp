@@ -9,52 +9,53 @@ const int ledPin = D2;
 const int buttonPin = D1;
 
 // กำหนดตัวแปรสำหรับ State Machine
-enum State { LED_OFF, LED_ON, WAIT_FOR_RELEASE };
+enum State { LED_OFF, LED_ON};
 State currentState = LED_ON;
 
-// กำหนดตัวแปรสำหรับเก็บค่าปุ่มขณะกดและปล่อย
-//volatile bool buttonPressed = false;
 
-IRAM_ATTR void handleButtonPress() {
+IRAM_ATTR void ButtonPress() {
+  
   // ในฟังชั่นนี้จะถูกเรียกเมื่อเกิดการกดปุ่ม
   if (digitalRead(buttonPin)==HIGH) {
+  //while (digitalRead(buttonPin) == HIGH)
+  //    {          
+   //     } 
+    delay(100);
+    Serial.println("Button Pressed");
     // ตรวจสอบ Debounce โดยรอเวลา debounceDelay
-     while (digitalRead(buttonPin) == HIGH)
-        {          
-        }   
-      State currentState = LED_OFF;
-    }
-  }
+   //    
+      currentState = LED_OFF;
+    }    
+}
 
 void setup() {
   // เริ่มต้น Serial Monitor
   Serial.begin(115200);
-
   // กำหนดขาที่เชื่อมกับ LED เป็น OUTPUT
   pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
-
+  //digitalWrite(ledPin, LOW);
   // กำหนดขาที่เชื่อมกับปุ่มเป็น INPUT_PULLUP
   pinMode(buttonPin, INPUT);
-
-
-  // กำหนดให้ฟังชั่น handleButtonPress เรียกใช้งานเมื่อเกิดการกดปุ่ม
-  attachInterrupt(digitalPinToInterrupt(buttonPin), handleButtonPress, RISING);
+  // กำหนดให้ฟังชั่น ButtonPress เรียกใช้งานเมื่อเกิดการกดปุ่ม
+  attachInterrupt(digitalPinToInterrupt(buttonPin), ButtonPress, RISING);
 }
 
 void loop() {
   switch (currentState) {
     case LED_OFF:
+    Serial.println("LED OFF");
       digitalWrite(ledPin, LOW);
       if(digitalRead(buttonPin)==LOW){
-
-        currentState = LED_ON;    
-      }              
+       currentState = LED_ON;   
+      }         
       break;
     case LED_ON:
-      digitalWrite(ledPin, HIGH);   
+      Serial.println("LED ON");
+      digitalWrite(ledPin, HIGH);     
       break;
   }
 }
+
+
 
 
