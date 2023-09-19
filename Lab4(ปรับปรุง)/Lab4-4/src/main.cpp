@@ -1,4 +1,4 @@
-//4.แจ้งเตือนผ่าน LED 3 ดวง เมื่อถึงค่าอุณหภูมิที่กำหนด
+//•	โจทย์ประยุกต์ แจ้งเตือนอุณหภูมิผ่าน LED 3 ดวง เมื่อถึงค่าอุณหภูมิที่กำหนด
 #include <arduino.h>
 #include <Wire.h>                  
 #include "SHTC3.h"
@@ -97,3 +97,126 @@ void loop() {
       break;
   }
 }
+
+/*
+//4.กำหนดใช้ LED 4 ดวง มีปุ่มกด 2 ปุ่ม โดยปุ่มที่ 1 สามารถควบคุม LED ขยับไปทางขวา ส่วนปุ่มที่ 2 สามารถควบคุมขยับไปทางซ้าย เมื่อกด 1 ครั้ง โดย LED เริ่มต้นจะอยู่ซ้ายมือสุด     
+#include <Arduino.h>
+
+// กำหนดขาของ LED
+const int ledPins[] = {D1, D2};
+//const int numLEDs = sizeof(ledPins) / sizeof(ledPins[0]);
+
+// กำหนดขาของปุ่ม
+const int buttonChangeStatePin = D7;
+const int buttonReduceLEDPin = D8;
+
+// กำหนดสถานะ
+enum State {
+  STATE_1,
+  STATE_2,
+  STATE_3,
+  STATE_4
+};
+
+
+
+State currentState = STATE_1;
+//int numActiveLEDs = 1;
+/*
+void changeState() {
+  // เปลี่ยนสถานะแต่ละครั้งที่ปุ่มถูกกด
+  switch (currentState) {
+    case STATE_1:
+      digitalWrite(ledPins[0], HIGH);
+      digitalWrite(ledPins[1], LOW);      
+      currentState = STATE_2;      
+      break;
+    case STATE_2:
+      digitalWrite(ledPins[0], LOW);
+      digitalWrite(ledPins[1], HIGH);
+      currentState = STATE_3;
+      break;
+    case STATE_3:
+      currentState = STATE_4;
+      break;
+    case STATE_4:
+      currentState = STATE_1;
+      break;
+  }
+}
+
+void reduceLEDCount() {
+  // ลดจำนวน LED ที่ติดตาม State Machine
+  if (numActiveLEDs > 1) {
+    numActiveLEDs--;
+  }
+}
+
+void updateLEDs() {
+  // ปิด LED ทุกดวง
+  for (int i = 0; i < numLEDs; i++) {
+    digitalWrite(ledPins[i], LOW);
+  }
+
+  // เปิด LED ตามจำนวนที่ต้องการ
+  for (int i = 0; i < numActiveLEDs; i++) {
+    digitalWrite(ledPins[i], HIGH);
+  }
+}
+*/
+/*
+void setup() {
+  // กำหนดขา LED เป็น OUTPUT
+ // for (int i = 0; i < numLEDs; i++) {
+ //   pinMode(ledPins[i], OUTPUT);
+ //   digitalWrite(ledPins[i], LOW);  // ปิด LED ทุกดวงเริ่มต้น
+ // }
+  pinMode(D1, OUTPUT);
+  pinMode(D2, OUTPUT);
+  // กำหนดขาปุ่มเป็น INPUT_PULLUP
+  pinMode(buttonChangeStatePin, INPUT);
+  pinMode(buttonReduceLEDPin, INPUT);
+
+  Serial.begin(115200);
+}
+
+void loop() {
+  // อ่านสถานะปุ่มเพื่อเปลี่ยนสถานะ
+  if (digitalRead(buttonChangeStatePin) == LOW) {
+    Serial.println("buttonChangeStatePin");
+    currentState = static_cast<State>((currentState + 1));
+    //changeState();
+    delay(100);  // ป้องกันการกระโดดสถานะ
+  }
+
+  // อ่านสถานะปุ่มเพื่อลดจำนวน LED
+  if (digitalRead(buttonReduceLEDPin) == HIGH) {
+    currentState = static_cast<State>((currentState - 1));
+   // reduceLEDCount();
+    delay(100);  // ป้องกันการกระโดดสถานะ
+  }
+
+ switch (currentState) {
+    case STATE_1:
+      digitalWrite(ledPins[0], HIGH);
+      digitalWrite(ledPins[1], LOW);   
+      Serial.println("STATE_1");   
+      currentState = STATE_2;      
+      break;
+    case STATE_2:
+      digitalWrite(ledPins[0], LOW);
+      digitalWrite(ledPins[1], HIGH);
+      Serial.println("STATE_2");
+      currentState = STATE_3;
+      break;
+    case STATE_3:
+      currentState = STATE_4;
+      break;
+    case STATE_4:
+      currentState = STATE_1;
+      break;
+  }
+}
+  // อัพเดทสถานะ LED ตาม State Machine
+
+*/
