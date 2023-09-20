@@ -21,24 +21,19 @@ void setup()
 void loop(){
   switch (state)
     {
-    case LED1:
-        
+    case LED1:        
         digitalWrite(D3, HIGH);
         digitalWrite(D4, LOW);
         digitalWrite(D5, LOW);
         digitalWrite(D6, LOW);
         if (digitalRead(D1) == HIGH){
-            while (digitalRead(D1) == HIGH);
-            {
-            }        
+            while (digitalRead(D1) == HIGH);       
             state = LED2; 
         }
         else if (digitalRead(D2) == HIGH)        
         {
           while (digitalRead(D2) == HIGH);
-          {
-          }
-            state = LED4;
+          state = LED4;
         }   
         break;
       case LED2:
@@ -47,15 +42,13 @@ void loop(){
         digitalWrite(D5, LOW);
         digitalWrite(D6, LOW);
         if (digitalRead(D1) == HIGH)
-        {while (digitalRead(D1) == HIGH);
         {
-        }
-            state = LED3; 
+          while (digitalRead(D1) == HIGH);
+          state = LED3; 
         }
         else if (digitalRead(D2) == HIGH)
         {
-          while (digitalRead(D2) == HIGH);{
-                 }
+          while (digitalRead(D2) == HIGH);  
           state = LED1;
         }   
         break;
@@ -66,15 +59,13 @@ void loop(){
         digitalWrite(D6, LOW);
         if (digitalRead(D1) == HIGH)
         {
-          while (digitalRead(D1) == HIGH);{
-                 }
-            state = LED4; 
+          while (digitalRead(D1) == HIGH);
+          state = LED4; 
         }
         else if (digitalRead(D2) == HIGH)
         {
-          while (digitalRead(D2) == HIGH);{
-                 }
-            state = LED2;
+          while (digitalRead(D2) == HIGH);
+          state = LED2;
         }   
         break;
       case LED4:
@@ -84,15 +75,13 @@ void loop(){
         digitalWrite(D6, HIGH);
         if (digitalRead(D1) == HIGH)
         {
-          while (digitalRead(D1) == HIGH);{
-                 }
-            state = LED1; 
+          while (digitalRead(D1) == HIGH);
+          state = LED1; 
         }
         else if (digitalRead(D2) == HIGH)
         {
-          while (digitalRead(D2) == HIGH);{
-                 }
-            state = LED3;
+          while (digitalRead(D2) == HIGH);
+          state = LED3;
         }   
         break;
 }
