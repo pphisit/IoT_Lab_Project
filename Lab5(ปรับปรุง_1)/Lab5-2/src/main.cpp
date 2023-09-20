@@ -1,4 +1,4 @@
-//2. บันทึกค่าอุณหภูมิและความชื้นลง SD Card  (มีแก้ไข)
+//2. บันทึกค่าอุณหภูมิและความชื้นลง SD Card
 #include <Arduino.h>
 #include "SHTC3.h" 
 #include "Wire.h" 
